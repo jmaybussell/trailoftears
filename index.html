@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Trail of Tears</title>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
+
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+        <title>387 Project</title>
+
+        <script type="text/javascript" src="data.js"></script>
+        <script type="text/javascript" src="data1.js"></script>
+        <script type="text/javascript" src="data2.js"></script>
+
+
+                <link rel="icon" href="maple-leaf.png">
+
+                      <style type="text/css">
+                        html, body { margin: 0; padding: 0; height: 100%; }
+                        #map { min-height: 100%; }
+
+                        .title {
+                                  padding: 6px 8px;
+                                  font: 14px/16px Arial, Helvetica, sans-serif;
+                                  background: blue;
+                                  background: rgba(197, 239, 247, 1);
+                                  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+                                  border-radius: 5px;
+                              }
+
+                      </style>
+    </head>
+
+    <body>
+        <div id="map" style="height: 500px"></div>
+
+        <script type="text/javascript">
+
+          var map = L.map('map', {
+              center: [38.16, -96.96],
+              zoom: 4
+          });
+
+      var canvas = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '@ <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+         maxZoom: 11,
+         minZoom: 5
+       }).addTo(map);
+
+      var greyscale = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+         attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
+         maxZoom: 11,
+         minZoom: 5
+       });
+
+                    var PolyStyle = {
+                        fillColor: '#0713f5',
+                        weight: 3,
+                        opacity: 1,
+                        color: '#0000ff',
+                        fillOpacity: 0.4
+                        };
+                    var WSRegdata = L.geoJson(data, {
+                        style:PolyStyle}).bindPopup(function (layer){
+                        return layer.feature.properties.RegionName + " " + 'Region'
+                               '<p style="color:purple"</b></p>';
+                    }).addTo(map);
+
+                    var PolygonStyle = {
+                        fillColor: '#21cf83',
+                        weight: 2,
+                        opacity: 1,
+                        color: '#b3f5d7',
+                        fillOpacity: 0.5
+                        };
+                    var WSReservdata = L.geoJson(data1, {
+                            style:PolygonStyle}).bindPopup(function (layer){
+                            return layer.feature.properties.LARName + " " + 'Reservation'
+                                   '<p style="color:green"</b></p>';
+                        }).addTo(map);
+
+                    var lineStyle = {
+                        "color": "#C31F48",
+                        "weight": 3,
+                        "opacity": 0.9
+                                };
+                    var Trail = L.geoJson(data2, {style: lineStyle}).addTo(map);
+
+
+                    var basemaps = {
+                                   "Color Canvas": canvas,
+                                   "Grey Canvas": greyscale
+                               };
+
+                           var overlaymaps = {
+                                               "Southwest Reservations": WSRegdata,
+                                               "Trail of Tears": Trail,
+                                               "Southwest BIA Regions": WSReservdata
+                                              };
+
+                           L.control.layers(basemaps, overlaymaps).addTo(map);
+
+
+            var title = L.control({position: 'bottomleft'}); // position of the title
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'title');
+                this._div.innerHTML = "<h3>Trail of Tears - 1831 – 1877</h3>";
+                return this._div;
+              };
+            title.addTo(map);
+
+        </script>
+   </body>
+</html>
